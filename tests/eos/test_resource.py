@@ -15,22 +15,7 @@ class TestEosResource:
 
         self.eos_route = '/eos/'
 
-    def test_missing_ship_aborts(self):
-        """Not including a ship ID should abort with correct error."""
-        response = self.client.post(self.eos_route, data={})
-        json_response = json.loads(response.data.decode('utf-8'))
-
-        assert response.status_code == 400
-        assert json_response == {
-            'message':
-                {
-                    'ship': 'Type ID for the ship being fit.',
-                },
-        }
-
-    def test_full_fit(self):
-        """Test a full fit gets parsed correctly."""
-        data = {
+        self.full_fit = {
             'ship': 1,
             'high_slots': [
                 {'id': 333, 'state': 'online', 'charge': 12779},
@@ -67,13 +52,93 @@ class TestEosResource:
                 2222,
                 3333,
             ],
-            'boosters': [
-                55,
-                66,
-                77,
-            ]
         }
 
-        response = self.client.post(self.eos_route, data=json.dumps(data))
+    def test_missing_ship_aborts(self):
+        """Not including a ship ID should abort with correct error."""
+        data = {}
+
+        response = self.client.post(self.eos_route, data=json.dumps(data), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 422
+        assert json_response == {
+            'messages':
+                {
+                    'ship': ['Missing data for required field.'],
+                },
+        }
+
+    def test_no_high_slots_parses(self):
+        """Test that if we don't pass high_slots it still parses."""
+        data = self.full_fit.copy()
+        del data['high_slots']
+
+        response = self.client.post(self.eos_route, data=json.dumps(data), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
 
         assert response.status_code == 200
+        assert json_response == {}
+
+    def test_no_mid_slots_parses(self):
+        """Test that if we don't pass mid_slots it still parses."""
+        data = self.full_fit.copy()
+        del data['mid_slots']
+
+        response = self.client.post(self.eos_route, data=json.dumps(data), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 200
+        assert json_response == {}
+
+    def test_no_low_slots_parses(self):
+        """Test that if we don't pass low_slots it still parses."""
+        data = self.full_fit.copy()
+        del data['low_slots']
+
+        response = self.client.post(self.eos_route, data=json.dumps(data), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 200
+        assert json_response == {}
+
+    def test_no_rigs_parses(self):
+        """Test that if we don't pass rigs it still parses."""
+        data = self.full_fit.copy()
+        del data['rigs']
+
+        response = self.client.post(self.eos_route, data=json.dumps(data), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 200
+        assert json_response == {}
+
+    def test_no_drones_parses(self):
+        """Test that if we don't pass drones it still parses."""
+        data = self.full_fit.copy()
+        del data['drones']
+
+        response = self.client.post(self.eos_route, data=json.dumps(data), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 200
+        assert json_response == {}
+
+    def test_no_implants_parses(self):
+        """Test that if we don't pass implants it still parses."""
+        data = self.full_fit.copy()
+        del data['implants']
+
+        response = self.client.post(self.eos_route, data=json.dumps(data), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 200
+        assert json_response == {}
+
+    def test_full_fit(self):
+        """Test a full fit gets parsed correctly."""
+        response = self.client.post(self.eos_route, data=json.dumps(self.full_fit), content_type='application/json')
+        json_response = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 200
+        assert json_response == {}
