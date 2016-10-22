@@ -1,5 +1,7 @@
 
 
+from eos import SourceManager, JsonDataHandler, JsonCacheHandler
+
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
@@ -7,6 +9,9 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 migrate = Migrate()
 
+data_handler = JsonDataHandler('phobos_dump/')
+cache_handler = JsonCacheHandler('pyfa_cache/eos_tq.json.bz2')
+SourceManager.add('tq', data_handler, cache_handler, make_default=True)
 
 def configure_extensions(app):
     """Registers all relevant extensions."""
