@@ -1,9 +1,8 @@
 
 
-
 from webargs import fields
 from webargs.flaskparser import use_args
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
 from .service import eos_service as es
 
@@ -41,5 +40,6 @@ class EosResource(Resource):
         drones = [es.build_drone(x['id'], x['state']) for x in args['drones']]
 
         fit = es.build_full_fit(ship, highs, mids, lows, rigs, implants, drones)
+        fit.validate()
 
         return {}, 200

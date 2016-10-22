@@ -1,6 +1,6 @@
 
 
-from eos import Fit, Ship, ModuleHigh, ModuleMed, ModuleLow, Rig, Implant, Drone, Charge
+from eos import Fit, Ship, ModuleHigh, ModuleMed, ModuleLow, Rig, Implant, Drone, Charge, State
 
 
 class EosService(object):
@@ -14,12 +14,20 @@ class EosService(object):
         return self._build_module(ModuleLow, type_id, state, charge_type_id)
 
     def _build_module(self, module_class, type_id, state, charge_type_id):
+        converted_state = self.convert_state(state)
+
         if charge_type_id is not None:
             charge = Charge(charge_type_id)
         else:
             charge = None
 
-        return module_class(type_id, state, charge)
+        if converted_state is not None:
+            module = module_class(type_id, state=converted_state, charge=charge)
+
+        else:
+            module = module_class(type_id, charge=charge)
+
+        return module
 
     @staticmethod
     def build_rig(type_id):
@@ -29,13 +37,33 @@ class EosService(object):
     def build_implant(type_id):
         return Implant(type_id)
 
-    @staticmethod
-    def build_drone(type_id, state):
-        return Drone(type_id, state)
+    def build_drone(self, type_id, state):
+        converted_state = self.convert_state(state)
+
+        if converted_state is not None:
+            drone = Drone(type_id, state=converted_state)
+
+        else:
+            drone = Drone(type_id)
+
+        return drone
 
     @staticmethod
     def build_ship(type_id):
         return Ship(type_id)
+
+    @staticmethod
+    def convert_state(state):
+        if state is not None:
+            if state is 'online':
+                return State.online
+            elif state is 'offline':
+                return State.offline
+            elif state is 'active':
+                return State.active
+            elif state is 'overload':
+                return State.overload
+        return None
 
     @staticmethod
     def build_full_fit(ship, highs=None, mids=None, lows=None, rigs=None, implants=None, drones=None):
@@ -48,7 +76,7 @@ class EosService(object):
 
         if mids is not None:
             for mid in mids:
-                fit.modules.medium.equip(mid)
+                fit.modules.med.equip(mid)
 
         if lows is not None:
             for lo in lows:
@@ -60,11 +88,11 @@ class EosService(object):
 
         if implants is not None:
             for imp in implants:
-                fit.implants.equip(imp)
+                fit.implants.add(imp)
 
         if drones is not None:
             for drone in drones:
-                fit.drones.equip(drone)
+                fit.drones.add(drone)
 
         return fit
 
