@@ -1,10 +1,10 @@
 
 
-from .eos import EosResource
+from .pyfa_eos import PyfaEosResource
 from .fits import FitsResource
 
 
 def configure_resources(api):
     """Configures all resources for the API."""
-    api.add_resource(EosResource, '/eos/')
+    api.add_resource(PyfaEosResource, '/eos/')
     api.add_resource(FitsResource, '/fits/')

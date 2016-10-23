@@ -1,9 +1,11 @@
 
 
-from eos import Fit, Ship, ModuleHigh, ModuleMed, ModuleLow, Rig, Implant, Drone, Charge, State
+from eos import Fit, Ship, ModuleHigh, ModuleMed, ModuleLow, Rig, Implant, Drone, Charge, State, Skill
+
+from ..eve_static_data import eve_static_data_service
 
 
-class EosService(object):
+class PyfaEosService(object):
     def build_high_module(self, type_id, state, charge_type_id):
         return self._build_module(ModuleHigh, type_id, state, charge_type_id)
 
@@ -66,9 +68,13 @@ class EosService(object):
         return None
 
     @staticmethod
-    def build_full_fit(ship, highs=None, mids=None, lows=None, rigs=None, implants=None, drones=None):
+    def build_full_fit(ship, skills=None, highs=None, mids=None, lows=None, rigs=None, implants=None, drones=None):
         fit = Fit()
         fit.ship = ship
+
+        if skills is not None:
+            for skill in skills:
+                fit.skills.add(skill)
 
         if highs is not None:
             for hi in highs:
@@ -96,5 +102,15 @@ class EosService(object):
 
         return fit
 
+    @staticmethod
+    def build_skill(skill_id, level=5):
+        return Skill(skill_id, level)
 
-eos_service = EosService()
+    def build_all_v_character(self):
+        skills_category = 16
+        skill_types = eve_static_data_service.get_tyes_by_category(skills_category)
+
+        return [self.build_skill(x.typeID) for x in skill_types]
+
+
+pyfa_eos_service = PyfaEosService()
