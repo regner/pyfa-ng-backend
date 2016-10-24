@@ -2,6 +2,7 @@
 
 from eos import Fit, Ship, ModuleHigh, ModuleMed, ModuleLow, Rig, Implant, Drone, Charge, State, Skill
 
+from ..extensions import cache
 from ..eve_static_data import eve_static_data_service
 
 
@@ -106,6 +107,7 @@ class PyfaEosService(object):
     def build_skill(skill_id, level=5):
         return Skill(skill_id, level)
 
+    @cache.memoize(600)
     def build_all_v_character(self):
         skills_category = 16
         skill_types = eve_static_data_service.get_tyes_by_category(skills_category)

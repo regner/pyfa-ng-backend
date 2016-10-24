@@ -1,9 +1,11 @@
 
 
+from ..extensions import cache
 from .models import InvCategory, InvGroup, InvType
 
 
 class EVEStaticDataService(object):
+    @cache.memoize(600)
     def get_tyes_by_category(self, category_id):
         category = InvCategory.query.filter_by(categoryID=category_id).first()
 
