@@ -32,6 +32,9 @@ class PyfaEosResource(Resource):
 
     @staticmethod
     def convert_fit_to_response(fit):
+        dps = fit.stats.get_nominal_dps(reload=False)
+        dps_reload = fit.stats.get_nominal_dps(reload=True)
+
         return {
             'cpu': {
                 'used': fit.stats.cpu.used,
@@ -84,6 +87,22 @@ class PyfaEosResource(Resource):
             'launched_drones': {
                 'used': fit.stats.launched_drones.used,
                 'total': fit.stats.launched_drones.total,
+            },
+            'damage': {
+                'reload': {
+                    'em': dps_reload.em,
+                    'thermal': dps_reload.thermal,
+                    'kinetic': dps_reload.kinetic,
+                    'explosive': dps_reload.explosive,
+                    'total': dps_reload.total,
+                },
+                'no_reload': {
+                    'em': dps.em,
+                    'thermal': dps.thermal,
+                    'kinetic': dps.kinetic,
+                    'explosive': dps.explosive,
+                    'total': dps.total,
+                },
             },
         }
 
