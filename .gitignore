@@ -1,5 +1,12 @@
-.idea
 .cache
 .tox
-venv
+*.pyc
+.coverage
+.DS_Store
+
 eve_data
+
+venv
+
+.idea
+pyfa-ng-backend.iml
