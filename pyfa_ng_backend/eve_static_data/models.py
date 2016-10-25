@@ -49,3 +49,15 @@ class InvType(db.Model):
     iconID = db.Column(db.Integer)
     soundID = db.Column(db.Integer)
     graphicID = db.Column(db.Integer)
+
+
+class InvMarketGroups(db.Model):
+    __tablename__ = 'invMarketGroups'
+    __bind_key__ = 'sde'
+
+    marketGroupID = db.Column(db.Integer, primary_key=True)
+    parentGroupID = db.Column(db.Integer)
+    marketGroupName = db.Column(db.Text)
+    description = db.Column(db.Text)
+    iconID = db.Column(db.Integer)
+    hasTypes = db.Column(db.Integer)

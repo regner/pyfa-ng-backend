@@ -5,10 +5,10 @@ from webargs import fields
 from webargs.flaskparser import use_args
 from flask_restful import Resource
 
-from .service import pyfa_eos_service as pes
+from ..pyfa_eos import pyfa_eos_service as pes
 
 
-class PyfaEosResource(Resource):
+class FitValidation(Resource):
     module_args = fields.Nested({
         'id': fields.Int(required=True),
         'state': fields.Str(required=True),
@@ -119,6 +119,9 @@ class PyfaEosResource(Resource):
         skills = pes.build_all_v_character()
 
         fit = pes.build_full_fit(ship, skills, highs, mids, lows, rigs, implants, drones)
-        fit.validate()
 
-        return self.convert_fit_to_response(fit), 200
+        try:
+            fit.validate()
+            return self.convert_fit_to_response(fit), 200
+        except ValidationError:
+            return {}, 200

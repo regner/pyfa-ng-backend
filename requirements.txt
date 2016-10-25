@@ -12,3 +12,5 @@ webargs==1.4.0
 # Tests
 pytest==3.0.3
 pytest-cov==2.4.0
+pytest-mock==1.2
+pytest-flask==0.10.0
