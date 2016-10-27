@@ -111,7 +111,7 @@ class PyfaEosService(object):
     @cache.memoize()
     def build_all_v_character(self):
         skills_category = CAT_SKILLS
-        skill_types = eve_static_data_service.get_tyes_by_category(skills_category)
+        skill_types = eve_static_data_service.get_types_by_category(skills_category)
 
         return [self.build_skill(x.typeID) for x in skill_types]
 

@@ -19,7 +19,7 @@ class InvGroup(db.Model):
 
     groupID = db.Column(db.Integer, primary_key=True)
     categoryID = db.Column(db.Integer, db.ForeignKey('invCategories.categoryID'))
-    category = db.relationship('InvCategory', backref=db.backref('groups', lazy='dynamic'))
+    category = db.relationship('InvCategory', backref=db.backref('groups', lazy='joined'))
     groupName = db.Column(db.Text)
     iconID = db.Column(db.Integer)
     useBasePrice = db.Column(db.Integer)
@@ -35,7 +35,7 @@ class InvType(db.Model):
 
     typeID = db.Column(db.Integer, primary_key=True)
     groupID = db.Column(db.Integer, db.ForeignKey('invGroups.groupID'))
-    group = db.relationship('InvGroup', backref=db.backref('types', lazy='dynamic'))
+    group = db.relationship('InvGroup', backref=db.backref('types', lazy='joined'))
     typeName = db.Column(db.Text)
     description = db.Column(db.Text)
     mass = db.Column(db.Float)
@@ -45,7 +45,8 @@ class InvType(db.Model):
     raceID = db.column(db.Integer)
     basePrice = db.Column(db.Float)
     published = db.Column(db.Integer)
-    marketGroupID = db.Column(db.Integer)
+    marketGroupID = db.Column(db.Integer, db.ForeignKey('invMarketGroups.marketGroupID'))
+    marketGroup = db.relationship('InvMarketGroups', backref=db.backref('types', lazy='joined'))
     iconID = db.Column(db.Integer)
     soundID = db.Column(db.Integer)
     graphicID = db.Column(db.Integer)
@@ -61,3 +62,14 @@ class InvMarketGroups(db.Model):
     description = db.Column(db.Text)
     iconID = db.Column(db.Integer)
     hasTypes = db.Column(db.Integer)
+
+
+class DgmTypeEffects(db.Model):
+    __tablename__ = 'dgmTypeEffects'
+    __bind_key__ = 'sde'
+
+    # db.PrimaryKeyConstraint('typeID', 'effectID')
+
+    typeID = db.Column(db.Integer, primary_key=True)
+    effectID = db.Column(db.Integer, primary_key=True)
+    isDefault = db.Column(db.Integer)
