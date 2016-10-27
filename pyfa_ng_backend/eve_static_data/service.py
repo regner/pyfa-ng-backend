@@ -2,7 +2,7 @@
 
 from ..extensions import cache
 from .models import InvCategory, InvMarketGroups, DgmTypeEffects
-from .consts import dogma_effects_slots
+from .consts import dogma_effects_slots, market_groups_filter
 
 
 class EVEStaticDataService(object):
@@ -20,7 +20,34 @@ class EVEStaticDataService(object):
     @cache.memoize()
     def get_market_groups(self):
         market_groups = InvMarketGroups.query.all()
-        return market_groups
+        filtered_groups = self._filter_market_groups(market_groups)
+
+        return filtered_groups
+
+    @staticmethod
+    def _filter_market_groups(market_groups):
+        good_groups = []
+        good_group_ids = []
+
+        while True:
+            new_good_groups = False
+
+            for group in market_groups:
+                if group.marketGroupID not in good_group_ids:
+                    if group.parentGroupID is None and group.marketGroupID in market_groups_filter:
+                        good_groups.append(group)
+                        good_group_ids.append(group.marketGroupID)
+                        new_good_groups = True
+
+                    elif group.parentGroupID in good_group_ids:
+                        good_groups.append(group)
+                        good_group_ids.append(group.marketGroupID)
+                        new_good_groups = True
+
+            if new_good_groups is False:
+                break
+
+        return good_groups
 
     @cache.memoize()
     def get_market_group(self, group_id):

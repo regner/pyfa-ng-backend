@@ -3,7 +3,20 @@
 # Inventory Categories
 CAT_SKILLS = 16
 
-# Market Groups
+# Market Groups We Care About
+market_group_ammo = 11
+market_group_drones = 157
+market_group_implants = 24
+market_group_ship_equipment = 9
+market_group_ships = 4
+
+market_groups_filter = [
+    market_group_ammo,
+    market_group_drones,
+    market_group_implants,
+    market_group_ship_equipment,
+    market_group_ships,
+]
 
 # Dogma Effects
 low_slot = 11
