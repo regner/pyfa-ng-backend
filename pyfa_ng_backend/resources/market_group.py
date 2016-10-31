@@ -3,6 +3,7 @@
 from flask_restful import Resource
 
 from ..eve_static_data import eve_static_data_service, consts
+from ..utils.decorators import cache_control
 
 
 class MarketGroup(Resource):
@@ -30,6 +31,7 @@ class MarketGroup(Resource):
             'slot': self.convert_effect_to_slot(slot),
         }
 
+    @cache_control()
     def get(self, market_group_id):
         market_group = eve_static_data_service.get_market_group(market_group_id)
 

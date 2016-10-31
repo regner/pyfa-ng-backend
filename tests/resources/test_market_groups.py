@@ -54,3 +54,16 @@ def test_market_groups(mocker, client):
             'has_types': True,
         },
     ]
+
+
+def test_market_groups_has_cache_header(mocker, client):
+    """Ensure that the market groups response has the Cache-Control header."""
+    static_data_service = mocker.patch('pyfa_ng_backend.resources.market_group.eve_static_data_service')
+    static_data_service.get_market_groups.return_value = []
+
+    response = client.get(MARKET_GROUPS_URL)
+
+    assert response.status_code == 200
+    assert 'Cache-Control' in response.headers
+
+
