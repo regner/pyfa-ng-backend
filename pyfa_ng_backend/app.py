@@ -2,6 +2,7 @@
 
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 
 from .config import AppConfig
 from .extensions import configure_extensions
@@ -14,6 +15,7 @@ def create_app():
     app.config.from_object(AppConfig)
 
     api = Api(app)
+    CORS(app)
 
     configure_extensions(app)
     configure_resources(api)

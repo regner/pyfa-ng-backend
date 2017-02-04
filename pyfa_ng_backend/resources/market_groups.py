@@ -1,6 +1,7 @@
 
 
 from flask_restful import Resource
+from flask_restful.utils import cors
 
 from ..utils.decorators import cache_control
 from ..eve_static_data import eve_static_data_service
